@@ -27,7 +27,7 @@ internal class BranchServiceTest {
     fun `should get all branches`() {
         every {
             githubFeignClient.retrieveBranches(
-                credential = any(), owner = any(), repo = any()
+                baseUrl = any(), credential = any(), owner = any(), repo = any()
             )
         } returns listOf(
             branch1,

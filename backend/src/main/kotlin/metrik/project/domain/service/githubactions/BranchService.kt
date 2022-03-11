@@ -4,6 +4,7 @@ import metrik.project.domain.model.PipelineConfiguration
 import metrik.project.infrastructure.github.feign.GithubFeignClient
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import java.net.URI
 import java.net.URL
 
 @Service
@@ -11,6 +12,7 @@ class BranchService(
     private val githubFeignClient: GithubFeignClient,
 ) {
     private var logger = LoggerFactory.getLogger(javaClass.name)
+    private val githubBaseUrl = "https://api.github.com/repos"
 
     fun retrieveBranches(
         pipeline: PipelineConfiguration
@@ -25,6 +27,7 @@ class BranchService(
         val branches = with(githubFeignClient) {
             getOwnerRepoFromUrl(pipeline.url).let { (owner, repo) ->
                 retrieveBranches(
+                    URI(pipeline.baseUrl ?: githubBaseUrl),
                     pipeline.credential,
                     owner,
                     repo,

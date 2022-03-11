@@ -58,14 +58,14 @@ internal class GithubActionsPipelineServiceTest {
         pipelineService.verifyPipelineConfiguration(githubActionsPipeline)
 
         verify {
-            githubFeignClient.retrieveMultipleRuns(any(), any(), any())
+            githubFeignClient.retrieveMultipleRuns(any(), any(), any(), any())
         }
     }
 
     @Test
     fun `should throw exception when verify pipeline given response is 500`() {
         every {
-            githubFeignClient.retrieveMultipleRuns(any(), any(), any())
+            githubFeignClient.retrieveMultipleRuns(any(), any(), any(), any())
         } throws FeignException.errorStatus(
             "GET",
             buildFeignResponse(500)
@@ -81,7 +81,7 @@ internal class GithubActionsPipelineServiceTest {
     @Test
     fun `should throw exception when verify pipeline given response is 404`() {
         every {
-            githubFeignClient.retrieveMultipleRuns(any(), any(), any())
+            githubFeignClient.retrieveMultipleRuns(any(), any(), any(), any())
         } throws FeignException.errorStatus(
             "GET",
             buildFeignResponse(404)

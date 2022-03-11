@@ -28,7 +28,8 @@ data class Commit(
     val commitId: String = Strings.EMPTY,
     val timestamp: Long = 0,
     val date: String = Strings.EMPTY,
-    val pipelineId: String? = null
+    val pipelineId: String? = null,
+
 )
 
 data class Execution(

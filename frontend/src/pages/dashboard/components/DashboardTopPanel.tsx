@@ -1,5 +1,5 @@
 import { EditableText } from "../../../components/EditableText";
-import { Button, Col, DatePicker, Form, Popover, Row, Select, Typography } from "antd";
+import { Button, Col, DatePicker, Form, Input, Popover, Row, Select, Typography } from 'antd';
 import { FullscreenOutlined, SyncOutlined } from "@ant-design/icons";
 import PipelineSetting from "./PipelineSetting";
 import React, { FC, KeyboardEvent, useEffect, useState } from "react";
@@ -80,6 +80,7 @@ export interface FormValues {
 	duration: [moment.Moment, moment.Moment];
 	pipelines: Pipeline[];
 	unit: MetricsUnit;
+	branch: string;
 }
 
 interface DashboardTopPanelProps {
@@ -100,6 +101,7 @@ const INPUT_FIELD_LABELS = {
 	TIME_RANGE: "Time Range",
 	SAMPLING_INTERVAL: "Sampling Interval",
 	PIPELINE_STAGE: "Pipeline/Stage",
+	PIPELINE_BRANCH: "Branch",
 };
 
 export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
@@ -126,6 +128,7 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 		] as any,
 		unit: "Fortnightly",
 		pipelines: [],
+		branch: "main",
 	} as FormValues;
 	const [project, getProjectRequest] = useRequest(getProjectDetailsUsingGet);
 	const [, updateProjectNameRequest] = useRequest(updateProjectNameUsingPut);
@@ -335,6 +338,13 @@ export const DashboardTopPanel: FC<DashboardTopPanelProps> = ({
 											: []
 									}
 								/>
+							</Form.Item>
+						</Col>
+						<Col>
+							<Form.Item
+								label={ INPUT_FIELD_LABELS.PIPELINE_BRANCH }
+								name="branch">
+								<Input defaultValue="main" />
 							</Form.Item>
 						</Col>
 						<Col style={{ textAlign: "right" }}>

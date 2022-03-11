@@ -8,6 +8,7 @@ import metrik.project.rest.vo.response.SyncProgress
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.net.URL
+import java.net.URI
 import kotlin.math.ceil
 
 @Service
@@ -15,6 +16,7 @@ class RunService(
     private val githubFeignClient: GithubFeignClient,
 ) {
     private var logger = LoggerFactory.getLogger(javaClass.name)
+    private val githubBaseUrl = "https://api.github.com/repos"
 
     fun syncRunsByPage(
         pipeline: PipelineConfiguration,
@@ -35,6 +37,7 @@ class RunService(
                     "Sending request to Github Feign Client with url: ${pipeline.url}, pageIndex: $pageIndex"
             )
             val syncedRunsResponse = githubFeignClient.retrieveMultipleRuns(
+                URI(pipeline.baseUrl ?: githubBaseUrl),
                 pipeline.credential,
                 owner,
                 repo,
@@ -83,7 +86,7 @@ class RunService(
                 "Sending request to Github Feign Client with owner: ${pipeline.url}, runId: $runId"
         )
 
-        return githubFeignClient.retrieveSingleRun(pipeline.credential, owner, repo, runId)?.toGithubActionsRun()
+        return githubFeignClient.retrieveSingleRun(URI(pipeline.baseUrl ?: githubBaseUrl), pipeline.credential, owner, repo, runId)?.toGithubActionsRun()
     }
 
     private fun getOwnerRepoFromUrl(url: String): Pair<String, String> {

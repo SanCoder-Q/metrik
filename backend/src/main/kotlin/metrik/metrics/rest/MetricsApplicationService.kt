@@ -43,11 +43,14 @@ class MetricsApplicationService {
         pipelineWithStages: List<PipelineStageRequest>,
         startTimestamp: Long,
         endTimestamp: Long,
-        period: CalculationPeriod
+        period: CalculationPeriod,
+        branch: String?
     ): FourKeyMetricsResponse {
         validateTime(startTimestamp, endTimestamp)
         val pipelineStageMap = pipelineWithStages.map { Pair(it.pipelineId, it.stage) }.toMap()
-        val allBuilds = buildRepository.getAllBuilds(pipelineStageMap.keys)
+        val allBuilds = buildRepository.getAllBuilds(pipelineStageMap.keys).filter {
+            if (branch == null) true else it.branch == branch
+        }
         val timeRangeByUnit: List<Pair<Long, Long>> = TimeRangeSplitter.split(startTimestamp, endTimestamp, period)
 
         return FourKeyMetricsResponse(

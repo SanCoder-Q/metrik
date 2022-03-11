@@ -75,6 +75,7 @@ export const PageDashboard = () => {
 					stage: i.childValue,
 				})),
 				unit: formValues.unit,
+				branch: formValues.branch,
 			},
 		})
 			.then(response => {

@@ -163,11 +163,11 @@ internal class MetricsApplicationServiceTest {
     @Suppress("LongMethod")
     fun `should return correct metric response`() {
         val fourKeyMetricsResponse = metricsApplicationService.calculateFourKeyMetrics(
-            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit
+            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit, "main"
         )
 
         val fourKeyMetricsResponse2 = metricsApplicationService.calculateFourKeyMetrics(
-            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit2
+            pipelineStages, startOfFirstPeriod, endOfSecondPeriod, unit2, "main"
         )
 
         assertEquals(
@@ -239,7 +239,8 @@ internal class MetricsApplicationServiceTest {
                 listOf(PipelineStageRequest("pipelineId", "deploy to prod")),
                 1,
                 1,
-                CalculationPeriod.Fortnightly
+                CalculationPeriod.Fortnightly,
+                "main"
             )
         }
     }

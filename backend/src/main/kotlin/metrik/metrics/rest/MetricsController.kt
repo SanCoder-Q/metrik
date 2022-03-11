@@ -23,6 +23,7 @@ class MetricsController {
             metricsQueryRequest.startTime,
             metricsQueryRequest.endTime,
             metricsQueryRequest.unit,
+            metricsQueryRequest.branch,
         )
     }
 
@@ -32,13 +33,15 @@ class MetricsController {
         @RequestParam targetStage: String,
         @RequestParam startTime: Long,
         @RequestParam endTime: Long,
-        @RequestParam unit: CalculationPeriod
+        @RequestParam unit: CalculationPeriod,
+        @RequestParam(required = false) branch: String?
     ): FourKeyMetricsResponse {
         return metricsApplicationService.calculateFourKeyMetrics(
             listOf(PipelineStageRequest(pipelineId, targetStage)),
             startTime,
             endTime,
-            unit
+            unit,
+            branch
         )
     }
 }

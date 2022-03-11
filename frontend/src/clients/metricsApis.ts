@@ -11,6 +11,7 @@ export interface MetricsQueryRequest {
 	unit: MetricsUnit;
 	startTime: number;
 	endTime: number;
+	branch: string;
 }
 
 export interface FourKeyMetrics {

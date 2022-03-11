@@ -5,8 +5,6 @@ plugins {
     application
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("org.jetbrains.kotlin.plugin.spring") version "1.6.21"
-    id("org.jetbrains.kotlinx.kover") version "0.5.0"
-    id("io.gitlab.arturbosch.detekt") version "1.20.0"
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
@@ -61,7 +59,6 @@ configurations["apiTestRuntimeOnly"].extendsFrom(configurations.testRuntimeOnly.
 val ktlintConfiguration: Configuration by configurations.creating
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.20.0")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -116,45 +113,6 @@ tasks.withType<Test> {
     outputs.upToDateWhen { false }
 }
 
-val coverageExclusion = listOf(
-    "metrik/Application**",
-    "**/applicationconfig**",
-    "**/dto/**",
-    "**/vo/**",
-    "**/model/**",
-    "**/rest/validation/**",
-    "**GlobalExceptionHandler**"
-)
-
-kover {
-    isDisabled = false
-    jacocoEngineVersion.set("0.8.8")
-    generateReportOnCheck = true
-    runAllTestsForProjectTask = false
-}
-
-tasks.koverMergedVerify {
-    includes = listOf("*")
-    excludes = coverageExclusion
-
-    rule {
-        name = "Minimal line coverage rate in percent"
-        bound {
-            minValue = 90
-            // valueType is kotlinx.kover.api.VerificationValueType.COVERED_LINES_PERCENTAGE by default
-        }
-    }
-}
-
-tasks.test {
-    extensions.configure(kotlinx.kover.api.KoverTaskExtension::class) {
-        isDisabled = false
-        binaryReportFile.set(file("$buildDir/custom/result.bin"))
-        includes = listOf("*")
-        excludes = coverageExclusion
-    }
-}
-
 val apiTest = task<Test>("apiTest") {
     description = "Run API tests."
     group = "verification"
@@ -165,36 +123,3 @@ val apiTest = task<Test>("apiTest") {
 
 tasks.check { dependsOn(apiTest) }
 
-detekt {
-    buildUponDefaultConfig = true
-    allRules = true
-    config = files("$projectDir/gradle/detekt/detekt.yml")
-    source = objects.fileCollection().from("src")
-}
-
-// ktlint tasks
-val outputDir = "${project.buildDir}/reports/ktlint/"
-val inputFiles = project.fileTree(mapOf("dir" to "src", "include" to "**/*.kt"))
-
-val ktlintCheck = task<JavaExec>("ktlintCheck") {
-    inputs.files(inputFiles)
-    outputs.dir(outputDir)
-
-    description = "Check Kotlin code style."
-    classpath = ktlintConfiguration
-    group = "verification"
-    main = "com.pinterest.ktlint.Main"
-    args = listOf("src/**/*.kt")
-}
-
-val ktlintFormat by tasks.creating(JavaExec::class) {
-    inputs.files(inputFiles)
-    outputs.dir(outputDir)
-
-    group = "formatting"
-    description = "Fix Kotlin code style deviations."
-    classpath = ktlintConfiguration
-    mainClass.set("com.pinterest.ktlint.Main")
-    args = listOf("-F", "src/**/*.kt")
-}
-// End of ktlint tasks

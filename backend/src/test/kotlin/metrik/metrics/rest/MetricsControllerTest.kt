@@ -36,7 +36,7 @@ internal class MetricsControllerTest {
         val metricUnit = CalculationPeriod.Fortnightly
         val level = LEVEL.ELITE
         val value = 10.2
-        val requestBody = MetricsQueryRequest(startTime, endTime, metricUnit, listOf(pipelineA, pipelineB))
+        val requestBody = MetricsQueryRequest(startTime, endTime, metricUnit, listOf(pipelineA, pipelineB), "main")
 
         val metric = Metrics(value, startTime, endTime)
         val summary = Metrics(value, level, startTime, endTime)
@@ -53,6 +53,7 @@ internal class MetricsControllerTest {
                 requestBody.startTime,
                 requestBody.endTime,
                 requestBody.unit,
+                requestBody.branch
             )
         } returns expectedResponse
 
@@ -97,7 +98,8 @@ internal class MetricsControllerTest {
                 listOf(PipelineStageRequest(pipelineId, targetStage)),
                 startTime,
                 endTime,
-                metricUnit
+                metricUnit,
+                "main"
             )
         } returns expectedResponse
 
@@ -108,6 +110,7 @@ internal class MetricsControllerTest {
                 .param("startTime", startTime.toString())
                 .param("endTime", endTime.toString())
                 .param("unit", metricUnit.toString())
+                .param("branch", "main")
         )
             .andExpect(jsonPath("$.leadTimeForChange.summary.level").value("ELITE"))
             .andExpect(jsonPath("$.leadTimeForChange.summary.value").value(value))

@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
+import java.net.URI
 
 @FeignClient(
     value = "github-api",
-    url = "https://api.github.com/repos",
+    url = "https://this-is-a-placeholder.com",
     decode404 = true,
     configuration = [GithubFeignClientConfiguration::class]
 )
@@ -22,6 +23,7 @@ interface GithubFeignClient {
 
     @GetMapping("/{owner}/{repo}/actions/runs")
     fun retrieveMultipleRuns(
+        baseUrl: URI,
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
@@ -31,6 +33,7 @@ interface GithubFeignClient {
 
     @GetMapping("/{owner}/{repo}/actions/runs/{runId}")
     fun retrieveSingleRun(
+        baseUrl: URI,
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
@@ -40,6 +43,7 @@ interface GithubFeignClient {
     @GetMapping("/{owner}/{repo}/commits")
     @Suppress("LongParameterList")
     fun retrieveCommits(
+        baseUrl: URI,
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
@@ -52,6 +56,7 @@ interface GithubFeignClient {
 
     @GetMapping("/{owner}/{repo}/branches")
     fun retrieveBranches(
+        baseUrl: URI,
         @RequestHeader("credential") credential: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
